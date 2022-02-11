@@ -17,7 +17,7 @@ async function Unwl(ip, cb) {
   var command = "netsh advfirewall firewall delete rule name=" + prefix + ip + ""
 
   if(!isWin)
-    command = "iptables -D INPUT -s " + ip + " -j ACCEPT"
+    command = "iptables -D INPUT_WL -s " + ip + " -j ACCEPT"
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
@@ -55,8 +55,23 @@ async function Unwl(ip, cb) {
 app.get('/unwlall', (req, res) => {
   var command = "netsh advfirewall firewall show rule name=all"
 
-  if(!isWin)
-    command = "iptables -S INPUT"
+  if(!isWin) {
+    exec('iptables -F INPUT_WL', (error, stdout, stderr) => {
+        if (error) {
+          res.send('err')
+          console.log(`error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          res.send('err')
+          console.log(`stderr: ${stderr}`);
+          return;
+        }
+
+        res.send('ok')
+    });
+    return
+  }
 
   exec(command, (error, stdout, stderr) => {
       if (error) {
@@ -70,22 +85,13 @@ app.get('/unwlall', (req, res) => {
         return;
       }
 
-      if (isWin) {
-        stdout.split('\n').forEach(line => {
-          if (line.includes(prefix) && line.includes(':')) {
-            const splitted = line.split(':')[1].trim()
-            Unwl(splitted.replace(prefix, ''), () => {})
-          }
-        });
-        res.send('ok')
-      } else {
-        stdout.split('\n').forEach(line => {
-          if (line.match('-A INPUT -s ([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\/32 -j ACCEPT')) {
-            Unwl(line.replace('-A INPUT -s ', '').replace('/32 -j ACCEPT', ''), () => {})
-          }
-        });
-        res.send('ok')
-      }
+      stdout.split('\n').forEach(line => {
+        if (line.includes(prefix) && line.includes(':')) {
+          const splitted = line.split(':')[1].trim()
+          Unwl(splitted.replace(prefix, ''), () => {})
+        }
+      });
+      res.send('ok')
   });
 })
 
@@ -107,7 +113,7 @@ app.get('/wl', (req, res) => {
   var command = "netsh advfirewall firewall add rule name=" + prefix + ip + " dir=in action=allow remoteip=" + ip
 
   if(!isWin)
-    command = "iptables -A INPUT -s " + ip + " -j ACCEPT"
+    command = "iptables -A INPUT_WL -s " + ip + " -j ACCEPT"
 
   exec(command, (error, stdout, stderr) => {
       if (error) {
