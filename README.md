@@ -1,6 +1,10 @@
 # reqip
 
 ```
+
+AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
+    local source = source
+    deferrals.defer()
     local ip = GetPlayerEndpoint(source)
     local hasWhitelistSucceeded = false
     PerformHttpRequest('http://127.0.0.1:3000/wl?ip=' .. tostring(ip), function(err, text, headers)
@@ -34,10 +38,12 @@
     if hasWhitelistSucceeded ~= true then
         deferrals.done('\n🚫\n🚫 Impossible de whitelist votre ip (' .. json.encode(hasWhitelistSucceeded) .. ') !\n🚫\n')
         return
-    end```
+    end
+    
+    deferrals.done()
+end)
     
     
-    ```
 AddEventHandler('playerDropped', function()
     local ip = GetPlayerEndpoint(source)
 
