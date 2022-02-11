@@ -5,7 +5,7 @@ const port = 3000
 
 const prefix = 'wl_'
 const isWin = process.platform === 'win32'
-const ipRegex = '((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}'
+const ipRegex = '([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})'
 
 async function Unwl(ip, cb) {
   if (ip == undefined || !ip.match(ipRegex)) {
@@ -35,6 +35,7 @@ async function Unwl(ip, cb) {
       console.log(`error: ${error.message}`);
       return;
     }
+
     if (stderr) {
       cb('err')
       console.log(`stderr: ${stderr}`);
