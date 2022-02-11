@@ -1,0 +1,37 @@
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+
+iptables -F
+iptables -X
+
+# Define chain to allow established connections
+iptables -N chain-states
+iptables -A chain-states -p tcp  -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A chain-states -p udp  -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A chain-states -p icmp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A chain-states -j RETURN
+
+iptables -N INPUT_WL
+
+# Drop invalid packets
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+
+# Accept everything on loopback
+iptables -A INPUT -i lo -j ACCEPT
+
+# Accept incoming/outgoing packets for established connections
+iptables -A INPUT  -j chain-states
+iptables -A INPUT  -j INPUT_WL
+
+# Accept incoming ICMP
+iptables -A INPUT -p icmp -j ACCEPT
+
+# Accept incoming SSH
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+## Drop everything else
+iptables -P INPUT   DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT  ACCEPT
