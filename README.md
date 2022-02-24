@@ -1,5 +1,11 @@
 # reqip
 
+    set sv_forceIndirectListing true
+    set sv_listingHostOverride "IP DU PROXY"
+    set sv_proxyIPRanges "IP DU PROXY/32"
+    set sv_endpoints "IP:PORT DU SERVEUR"
+
+
 ```
 
 AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
