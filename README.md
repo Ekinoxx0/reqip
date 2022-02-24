@@ -1,9 +1,18 @@
 # reqip
 
+    # prevents the server list from advertising your server using its actual IP
     set sv_forceIndirectListing true
-    set sv_listingHostOverride "IP DU PROXY"
+
+    # makes the server list backend request `https://server1.example.com/` instead of the default
+    set sv_listingHostOverride "DOMAINE DU PROXY"
+
+    # a space-separated list of IPv4 networks in CIDR notation to allow 'X-Real-IP'
+    # from, as well as bypass the rate limiter
     set sv_proxyIPRanges "IP DU PROXY/32"
-    set sv_endpoints "IP:PORT DU SERVEUR"
+
+    # the actual endpoint your server is hosted on, or one
+    # or multiple server endpoint proxies as noted below
+    set sv_endpoints "VRAI IP:PORT DU SERVEUR"
 
 
 ```
