@@ -5,6 +5,9 @@
 
     # makes the server list backend request `https://server1.example.com/` instead of the default
     set sv_listingHostOverride "DOMAINE DU PROXY"
+    
+    # 
+    set sv_listingIpOverride "IP DU PROXY"
 
     # a space-separated list of IPv4 networks in CIDR notation to allow 'X-Real-IP'
     # from, as well as bypass the rate limiter
