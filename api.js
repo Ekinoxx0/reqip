@@ -42,7 +42,7 @@ async function Unwl(ip, cb) {
       return;
     }
 
-    if (isWin ? stdout.includes('Ok.') : stdout == '') {
+    if (isWin ? stdout.toLowerCase().includes('ok.') : stdout == '') {
       console.log(`Unwhitelisted ip : ` + ip);
       cb('ok')
     } else {
@@ -127,7 +127,7 @@ app.get('/wl', (req, res) => {
         return;
       }
 
-      if (isWin ? stdout.includes('Ok.') : stdout == '') {
+      if (isWin ? stdout.toLowerCase().includes('ok.') : stdout == '') {
         console.log(`Whitelisted ip : ` + ip);
         res.send('ok')
       } else {
